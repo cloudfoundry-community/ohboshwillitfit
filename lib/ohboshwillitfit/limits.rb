@@ -18,6 +18,18 @@ module OhBoshWillItFit
       absolute_limits["maxTotalRAMSize"]
     end
 
+    def total_cores_used
+      absolute_limits["totalCoresUsed"]
+    end
+
+    def total_instances_used
+      absolute_limits["totalInstancesUsed"]
+    end
+
+    def total_ram_size_used
+      absolute_limits["totalRAMUsed"]
+    end
+
     def limits
       @limits ||= fog_compute.get_limits
     end

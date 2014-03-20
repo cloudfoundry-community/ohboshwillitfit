@@ -1,7 +1,7 @@
 require "json"
 
 describe OhBoshWillItFit::Limits do
-  context "fog_limits_no_totals" do
+  context "fog_limits - no_totals" do
     let(:fog_limits) { JSON.parse(File.read(spec_asset("fog_limits_no_totals.json"))) }
     let(:get_limits) { instance_double("Excon::Response", data: { body: fog_limits} ) }
     let(:fog_compute) { instance_double("Fog::Compute::OpenStack::Real", get_limits: get_limits) }
@@ -15,5 +15,40 @@ describe OhBoshWillItFit::Limits do
     it {
       expect(subject.max_total_ram_size).to eq(1966080)
     }
+    it {
+      expect(subject.total_cores_used).to eq(nil)
+    }
+    it {
+      expect(subject.total_instances_used).to eq(nil)
+    }
+    it {
+      expect(subject.total_ram_size_used).to eq(nil)
+    }
   end
+
+  context "fog_limits - totals" do
+    let(:fog_limits) { JSON.parse(File.read(spec_asset("fog_limits_totals.json"))) }
+    let(:get_limits) { instance_double("Excon::Response", data: { body: fog_limits} ) }
+    let(:fog_compute) { instance_double("Fog::Compute::OpenStack::Real", get_limits: get_limits) }
+    subject { OhBoshWillItFit::Limits.new(fog_compute) }
+    it {
+      expect(subject.max_total_cores).to eq(50)
+    }
+    it {
+      expect(subject.max_total_instances).to eq(40)
+    }
+    it {
+      expect(subject.max_total_ram_size).to eq(204800)
+    }
+    it {
+      expect(subject.total_cores_used).to eq(43)
+    }
+    it {
+      expect(subject.total_instances_used).to eq(24)
+    }
+    it {
+      expect(subject.total_ram_size_used).to eq(169472)
+    }
+  end
+
 end
