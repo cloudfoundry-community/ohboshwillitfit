@@ -24,6 +24,16 @@ describe OhBoshWillItFit::Limits do
     it {
       expect(subject.total_ram_size_used).to eq(nil)
     }
+
+    it {
+      expect(subject.cores_available).to eq(nil)
+    }
+    it {
+      expect(subject.instances_available).to eq(nil)
+    }
+    it {
+      expect(subject.ram_size_available).to eq(nil)
+    }
   end
 
   context "fog_limits - totals" do
@@ -48,6 +58,16 @@ describe OhBoshWillItFit::Limits do
     }
     it {
       expect(subject.total_ram_size_used).to eq(169472)
+    }
+
+    it {
+      expect(subject.cores_available).to eq(50-43)
+    }
+    it {
+      expect(subject.instances_available).to eq(40-24)
+    }
+    it {
+      expect(subject.ram_size_available).to eq(204800-169472)
     }
   end
 

@@ -30,6 +30,21 @@ module OhBoshWillItFit
       absolute_limits["totalRAMUsed"]
     end
 
+    def cores_available
+      return nil unless total_cores_used
+      max_total_cores - total_cores_used
+    end
+
+    def instances_available
+      return nil unless total_instances_used
+      max_total_instances - total_instances_used
+    end
+
+    def ram_size_available
+      return nil unless total_ram_size_used
+      max_total_ram_size - total_ram_size_used
+    end
+
     def limits
       @limits ||= fog_compute.get_limits
     end
