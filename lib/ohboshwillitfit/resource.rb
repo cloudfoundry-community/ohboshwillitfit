@@ -32,9 +32,9 @@ module OhBoshWillItFit
     def self.resource_totals(resources)
       totals = { "ram" => 0, "disk" => 0, "cpus" => 0 }
       resources.each do |resource|
-        totals["ram"] += resource.total_ram
-        totals["disk"] += resource.total_disk
-        totals["cpus"] += resource.total_cpus
+        totals["ram"] += resource.total_ram if resource.total_ram
+        totals["disk"] += resource.total_disk if resource.total_disk
+        totals["cpus"] += resource.total_cpus if resource.total_cpus
       end
       totals
     end

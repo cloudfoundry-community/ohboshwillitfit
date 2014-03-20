@@ -20,6 +20,7 @@ module Bosh::Cli::Command
       end
 
       flavors = fog_compute.flavors
+      flavor_errors = false
 
       resources = OhBoshWillItFit::Resource.from_file(deployment)
       OhBoshWillItFit::Resource.map_flavors!(resources, flavors)
@@ -27,15 +28,27 @@ module Bosh::Cli::Command
       say ""
       say "Flavours used:"
       resources.each do |resource|
-        say "  #{resource.instance_type}: #{resource.size} (ram: #{resource.ram} disk: #{resource.disk} cpus: #{resource.cpus})"
+        if resource.error
+          say "  #{resource.instance_type}: #{resource.error}".make_red
+          flavor_errors = true
+        else
+          say "  #{resource.instance_type}: #{resource.size} (ram: #{resource.ram} disk: #{resource.disk} cpus: #{resource.cpus})"
+        end
       end
 
       say ""
-      say "Resources used:"
-      resource_totals = OhBoshWillItFit::Resource.resource_totals(resources)
-      display_resource "ram", resource_totals["ram"], limits.ram_size_available
-      display_resource "disk", resource_totals["disk"]
-      display_resource "cpus", resource_totals["cpus"], limits.cores_available
+      if flavor_errors
+        say "Available flavors:".make_yellow
+        flavors.sort {|f1, f2| f1.ram <=> f2.ram}.each do |flavor|
+          say "  #{flavor.name}: ram: #{flavor.ram} disk: #{flavor.disk} cpus: #{flavor.vcpus}"
+        end
+      else
+        say "Resources used:"
+        resource_totals = OhBoshWillItFit::Resource.resource_totals(resources)
+        display_resource "ram", resource_totals["ram"], limits.ram_size_available
+        display_resource "disk", resource_totals["disk"]
+        display_resource "cpus", resource_totals["cpus"], limits.cores_available
+      end
     rescue => e
       err e.message
     end
