@@ -26,13 +26,17 @@ describe OhBoshWillItFit::Limits do
     }
 
     it {
-      expect(subject.cores_available).to eq(nil)
+      expect(subject.limits_available?).to be_false
+    }
+
+    it {
+      expect(subject.cores_available).to eq(1000)
     }
     it {
-      expect(subject.instances_available).to eq(nil)
+      expect(subject.instances_available).to eq(100)
     }
     it {
-      expect(subject.ram_size_available).to eq(nil)
+      expect(subject.ram_size_available).to eq(1966080)
     }
   end
 
@@ -58,6 +62,10 @@ describe OhBoshWillItFit::Limits do
     }
     it {
       expect(subject.total_ram_size_used).to eq(169472)
+    }
+
+    it {
+      expect(subject.limits_available?).to be_true
     }
 
     it {

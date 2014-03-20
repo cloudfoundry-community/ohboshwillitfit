@@ -30,19 +30,20 @@ module OhBoshWillItFit
       absolute_limits["totalRAMUsed"]
     end
 
+    def limits_available?
+      total_cores_used && total_instances_used && total_ram_size_used
+    end
+
     def cores_available
-      return nil unless total_cores_used
-      max_total_cores - total_cores_used
+      max_total_cores - (total_cores_used || 0)
     end
 
     def instances_available
-      return nil unless total_instances_used
-      max_total_instances - total_instances_used
+      max_total_instances - (total_instances_used || 0)
     end
 
     def ram_size_available
-      return nil unless total_ram_size_used
-      max_total_ram_size - total_ram_size_used
+      max_total_ram_size - (total_ram_size_used || 0)
     end
 
     def limits
