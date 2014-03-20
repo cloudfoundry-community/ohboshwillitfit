@@ -6,3 +6,4 @@ module OhBoshWillItFit
 end
 
 require "ohboshwillitfit/limits"
+require "ohboshwillitfit/fog_credentials"
