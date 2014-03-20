@@ -10,7 +10,9 @@ module Bosh::Cli::Command
       if fog_key = options[:fog_key]
         credentials = OhBoshWillItFit::FogCredentials.load_from_file(fog_key)
       end
-      p credentials
+      fog_compute = Fog::Compute.new({provider: 'OpenStack'}.merge(credentials))
+    rescue => e
+      err e.message
     end
 
   end
