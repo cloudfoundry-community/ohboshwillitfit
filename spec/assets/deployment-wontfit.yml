@@ -1,0 +1,6 @@
+name: wontfit
+resource_pools:
+  - name: xlarge
+    size: 50
+    cloud_properties:
+      instance_type: m1.xlarge

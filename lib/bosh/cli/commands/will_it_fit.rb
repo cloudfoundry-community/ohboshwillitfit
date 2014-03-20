@@ -19,11 +19,14 @@ module Bosh::Cli::Command
         say "Can only display output based on quotas, rather than unused limits."
       end
 
-      resources = OhBoshWillItFit::Resources.new(deployment).resources
+      flavors = fog_compute.flavors
+
+      resources = OhBoshWillItFit::Resources.new(deployment).resources_from_flavors(flavors)
+
       say ""
       say "Resources used:"
-      resources.each do |instance_type, size|
-        say "  #{instance_type}: #{size}"
+      resources.each do |instance_type, resource|
+        say "  #{instance_type}: #{resource['size']}"
       end
     rescue => e
       err e.message

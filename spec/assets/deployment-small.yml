@@ -1,0 +1,6 @@
+name: small
+resource_pools:
+  - name: small
+    size: 2
+    cloud_properties:
+      instance_type: m1.small
