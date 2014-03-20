@@ -33,12 +33,22 @@ module Bosh::Cli::Command
       say ""
       say "Resources used:"
       resource_totals = OhBoshWillItFit::Resource.resource_totals(resources)
-      say "  ram:  #{resource_totals["ram"]}"
-      say "  disk: #{resource_totals["disk"]}"
-      say "  cpus: #{resource_totals["cpus"]}"
+      display_resource "ram", resource_totals["ram"], limits.ram_size_available
+      display_resource "disk", resource_totals["disk"]
+      display_resource "cpus", resource_totals["cpus"], limits.cores_available
     rescue => e
       err e.message
     end
 
+    private
+    def display_resource(label, total, max_total=nil)
+      if max_total
+        message = "  #{label}: #{total} / #{max_total}"
+        message = total <= max_total ? message.make_green : message.make_red
+      else
+        message = "  #{label}: #{total}"
+      end
+      say message
+    end
   end
 end
