@@ -22,12 +22,20 @@ module Bosh::Cli::Command
       flavors = fog_compute.flavors
 
       resources = OhBoshWillItFit::Resource.from_file(deployment)
+      OhBoshWillItFit::Resource.map_flavors!(resources, flavors)
+
+      say ""
+      say "Flavours used:"
+      resources.each do |resource|
+        say "  #{resource.instance_type}: #{resource.size} (ram: #{resource.ram} disk: #{resource.disk} cpus: #{resource.cpus})"
+      end
 
       say ""
       say "Resources used:"
-      resources.each do |resource|
-        say "  #{resource.instance_type}: #{resource.size}"
-      end
+      resource_totals = OhBoshWillItFit::Resource.resource_totals(resources)
+      say "  ram:  #{resource_totals["ram"]}"
+      say "  disk: #{resource_totals["disk"]}"
+      say "  cpus: #{resource_totals["cpus"]}"
     rescue => e
       err e.message
     end
