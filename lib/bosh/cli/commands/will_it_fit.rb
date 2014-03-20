@@ -21,12 +21,12 @@ module Bosh::Cli::Command
 
       flavors = fog_compute.flavors
 
-      resources = OhBoshWillItFit::Resources.new(deployment).resources_from_flavors(flavors)
+      resources = OhBoshWillItFit::Resource.from_file(deployment)
 
       say ""
       say "Resources used:"
-      resources.each do |instance_type, resource|
-        say "  #{instance_type}: #{resource['size']}"
+      resources.each do |resource|
+        say "  #{resource.instance_type}: #{resource.size}"
       end
     rescue => e
       err e.message
