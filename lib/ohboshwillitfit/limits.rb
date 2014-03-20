@@ -7,19 +7,23 @@ module OhBoshWillItFit
     end
 
     def max_total_cores
-      limits.data[:body]["limits"]["absolute"]["maxTotalCores"]
+      absolute_limits["maxTotalCores"]
     end
 
     def max_total_instances
-      limits.data[:body]["limits"]["absolute"]["maxTotalInstances"]
+      absolute_limits["maxTotalInstances"]
     end
 
     def max_total_ram_size
-      limits.data[:body]["limits"]["absolute"]["maxTotalRAMSize"]
+      absolute_limits["maxTotalRAMSize"]
     end
 
     def limits
       @limits ||= fog_compute.get_limits
+    end
+
+    def absolute_limits
+      limits.data[:body]["limits"]["absolute"]
     end
 
   end

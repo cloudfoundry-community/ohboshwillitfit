@@ -11,6 +11,8 @@ module Bosh::Cli::Command
         credentials = OhBoshWillItFit::FogCredentials.load_from_file(fog_key)
       end
       fog_compute = Fog::Compute.new({provider: 'OpenStack'}.merge(credentials))
+      limits = OhBoshWillItFit::Limits.new(fog_compute)
+      p limits.absolute_limits
     rescue => e
       err e.message
     end
