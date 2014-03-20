@@ -1,0 +1,26 @@
+{
+  "limits": {
+    "rate": [
+
+    ],
+    "absolute": {
+      "maxServerMeta": 128,
+      "maxPersonality": 5,
+      "maxImageMeta": 128,
+      "maxPersonalitySize": 10240,
+      "maxSecurityGroupRules": 20,
+      "maxTotalKeypairs": 100,
+      "maxSecurityGroups": 10,
+      "maxTotalCores": 50,
+      "maxTotalFloatingIps": 10,
+      "maxTotalInstances": 40,
+      "maxTotalRAMSize": 204800,
+
+      "totalSecurityGroupsUsed": 0,
+      "totalRAMUsed": 169472,
+      "totalInstancesUsed": 24,
+      "totalFloatingIpsUsed": 0,
+      "totalCoresUsed": 43
+    }
+  }
+}
