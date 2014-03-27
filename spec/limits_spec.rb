@@ -75,7 +75,7 @@ describe OhBoshWillItFit::Limits do
     }
 
     it {
-      expect(subject.limits_available?).to be_true
+      expect(subject.volumes_limits_available?).to be_true
     }
 
     it {
