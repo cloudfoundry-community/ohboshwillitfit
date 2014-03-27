@@ -83,7 +83,9 @@ module OhBoshWillItFit
     end
 
     def flavor_for_server(server)
-      fog_compute.flavors.get(server.flavor["id"])
+      flavor_id = server.flavor["id"]
+      @flavors ||= {}
+      @flavors[flavor_id] ||= fog_compute.flavors.get(flavor_id)
     end
 
     # {
