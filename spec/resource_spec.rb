@@ -27,7 +27,7 @@ describe OhBoshWillItFit::Resource do
       it { expect(subject.first.total_cpus).to eq(2) }
       it {
         totals = OhBoshWillItFit::Resource.resource_totals(subject)
-        expect(totals).to eq({"ram" => 4096, "disk" => 24, "cpus" => 2})
+        expect(totals).to eq({"ram" => 4096, "disk" => 24, "cpus" => 2, "volumes" => 2, "instances" => 2})
       }
     end
   end
@@ -51,7 +51,7 @@ describe OhBoshWillItFit::Resource do
       it { expect(subject.first.total_cpus).to eq(50 * 8) }
       it {
         totals = OhBoshWillItFit::Resource.resource_totals(subject)
-        expect(totals).to eq({"ram" => 50 * 16384, "disk" => 50 * 80, "cpus" => 50 * 8})
+        expect(totals).to eq({"ram" => 50 * 16384, "disk" => 50 * 80, "cpus" => 50 * 8, "volumes" => 50, "instances" => 50})
       }
     end
   end

@@ -6,16 +6,19 @@ module Bosh::Cli::Command
     usage "will it fit"
     desc  "check if this deployment will fit into OpenStack tenancy"
     option "--fog-key default", "Look up credentials in ~/.fog"
+    option "--ignore-invalid-flavors", "Do not fail if invalid flavors being used"
     def will_it_fit
       deployment_required
+      ignore_invalid_flavors = options[:ignore_invalid_flavors]
 
       if fog_key = options[:fog_key]
         credentials = OhBoshWillItFit::FogCredentials.load_from_file(fog_key)
       end
       fog_compute = Fog::Compute.new({provider: 'OpenStack'}.merge(credentials))
-      limits = OhBoshWillItFit::Limits.new(fog_compute)
-      unless limits.limits_available?
-        say "Older OpenStacks like this do not provide current resources being used.".make_yellow
+      fog_volumes = Fog::Volume.new({provider: 'OpenStack'}.merge(credentials))
+      limits = OhBoshWillItFit::Limits.new(fog_compute, fog_volumes)
+      unless limits.volumes_limits_available?
+        say "Older OpenStacks like this do not provide current volume resources being used.".make_yellow
         say "Can only display output based on quotas, rather than unused limits."
       end
 
@@ -42,12 +45,16 @@ module Bosh::Cli::Command
         flavors.sort {|f1, f2| f1.ram <=> f2.ram}.each do |flavor|
           say "  #{flavor.name}: ram: #{flavor.ram} disk: #{flavor.disk} cpus: #{flavor.vcpus}"
         end
-      else
+      end
+
+      if !flavor_errors || ignore_invalid_flavors
         say "Resources used:"
         resource_totals = OhBoshWillItFit::Resource.resource_totals(resources)
+        display_resource "instances", resource_totals["instances"], limits.instances_available
         display_resource "ram", resource_totals["ram"], limits.ram_size_available
-        display_resource "disk", resource_totals["disk"]
         display_resource "cpus", resource_totals["cpus"], limits.cores_available
+        display_resource "volumes", resource_totals["volumes"], limits.volumes_available
+        display_resource "disk", resource_totals["disk"], limits.volume_size_available
       end
     rescue => e
       err e.message
