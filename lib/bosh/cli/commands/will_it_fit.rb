@@ -50,10 +50,11 @@ module Bosh::Cli::Command
       if !flavor_errors || ignore_invalid_flavors
         say "Resources used:"
         resource_totals = OhBoshWillItFit::Resource.resource_totals(resources)
+        display_resource "instances", resource_totals["instances"], limits.instances_available
         display_resource "ram", resource_totals["ram"], limits.ram_size_available
-        display_resource "disk", resource_totals["disk"], limits.volume_size_available
         display_resource "cpus", resource_totals["cpus"], limits.cores_available
         display_resource "volumes", resource_totals["volumes"], limits.volumes_available
+        display_resource "disk", resource_totals["disk"], limits.volume_size_available
       end
     rescue => e
       err e.message
