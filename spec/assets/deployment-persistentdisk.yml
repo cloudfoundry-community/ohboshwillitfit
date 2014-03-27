@@ -1,0 +1,14 @@
+name: small
+resource_pools:
+  - name: small
+    size: 3
+    cloud_properties:
+      instance_type: m1.small
+jobs:
+  - name: ephemeral
+    resource_pool: small
+    instances: 1
+  - name: data
+    resource_pool: small
+    instances: 2
+    persistent_disk: 4096

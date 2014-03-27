@@ -56,4 +56,29 @@ describe OhBoshWillItFit::Resource do
     end
   end
 
+  context "deployment with persistent disk jobs" do
+    let(:deployment_file) { spec_asset("deployment-persistentdisk.yml") }
+    subject { OhBoshWillItFit::Resource.from_file(deployment_file) }
+    it { expect(subject.size).to eq(3) }
+    it { expect(subject.first.instance_type).to eq("m1.small") }
+    it { expect(subject.first.size).to eq(3) }
+
+    context "with flavors" do
+      before do
+        OhBoshWillItFit::Resource.map_flavors!(subject, flavors)
+      end
+      it {
+        totals = OhBoshWillItFit::Resource.resource_totals(subject)
+        expect(totals).to eq({
+          "ram" => 2048*3,
+          "disk" => 12*3 + 4*2, # 12 from flavor; 4 from the 4096 persistent disk job
+          "cpus" => 3,
+          "volumes" => 3 + 2,
+          "instances" => 3
+        })
+      }
+    end
+  end
+
+
 end
