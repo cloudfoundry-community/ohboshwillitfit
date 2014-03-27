@@ -17,8 +17,8 @@ module Bosh::Cli::Command
       fog_compute = Fog::Compute.new({provider: 'OpenStack'}.merge(credentials))
       fog_volumes = Fog::Volume.new({provider: 'OpenStack'}.merge(credentials))
       limits = OhBoshWillItFit::Limits.new(fog_compute, fog_volumes)
-      unless limits.limits_available?
-        say "Older OpenStacks like this do not provide current resources being used.".make_yellow
+      unless limits.volumes_limits_available?
+        say "Older OpenStacks like this do not provide current volume resources being used.".make_yellow
         say "Can only display output based on quotas, rather than unused limits."
       end
 
@@ -51,7 +51,7 @@ module Bosh::Cli::Command
         say "Resources used:"
         resource_totals = OhBoshWillItFit::Resource.resource_totals(resources)
         display_resource "ram", resource_totals["ram"], limits.ram_size_available
-        display_resource "disk", resource_totals["disk"]
+        display_resource "disk", resource_totals["disk"], limits.volume_size_available
         display_resource "cpus", resource_totals["cpus"], limits.cores_available
       end
     rescue => e

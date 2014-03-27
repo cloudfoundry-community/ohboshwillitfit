@@ -20,7 +20,7 @@ module OhBoshWillItFit
     end
 
     def max_total_volume_size
-      100
+      volume_quotas["gigabytes"]
     end
 
     def total_cores_used
@@ -39,24 +39,24 @@ module OhBoshWillItFit
       @total_volume_size_used ||= fog_volumes.volumes.inject(0) {|size, vol| size + vol.size }
     end
 
-    def limits_available?
-      total_cores_used && total_instances_used && total_ram_size_used
+    def volumes_limits_available?
+      max_total_volume_size
     end
 
     def cores_available
-      max_total_cores - (total_cores_used || 0)
+      max_total_cores - total_cores_used
     end
 
     def instances_available
-      max_total_instances - (total_instances_used || 0)
+      max_total_instances - total_instances_used
     end
 
     def ram_size_available
-      max_total_ram_size - (total_ram_size_used || 0)
+      max_total_ram_size - total_ram_size_used
     end
 
     def volume_size_available
-      max_total_volume_size - (total_volume_size_used || 0)
+      max_total_volume_size ? (max_total_volume_size - total_volume_size_used) : nil
     end
 
     def compute_servers
@@ -90,6 +90,12 @@ module OhBoshWillItFit
     # }
     def volume_quotas
       @volume_quotas ||= fog_volumes.get_quota(current_tenant_id).data[:body]["quota_set"]
+    rescue Fog::Compute::OpenStack::NotFound
+      @volume_quotas = {
+        "snapshots"=>nil,
+        "gigabytes"=>nil,
+        "volumes"=>nil,
+      }
     end
 
     def current_tenant_id
