@@ -64,10 +64,12 @@ module OhBoshWillItFit
       max_total_ram_size - total_ram_size_used
     end
 
+    # return nil if target OpenStack doesn't support volumes.get_quota
     def volume_size_available
       max_total_volume_size ? (max_total_volume_size - total_volume_size_used) : nil
     end
 
+    # return nil if target OpenStack doesn't support volumes.get_quota
     def volumes_available
       max_total_volumes ? (max_total_volumes - total_volumes_used) : nil
     end
