@@ -60,6 +60,9 @@ describe OhBoshWillItFit::Limits do
     it {
       expect(subject.max_total_volume_size).to eq(15000)
     }
+    it {
+      expect(subject.max_total_volumes).to eq(40)
+    }
 
     it {
       expect(subject.total_cores_used).to eq(3)
@@ -72,6 +75,9 @@ describe OhBoshWillItFit::Limits do
     }
     it {
       expect(subject.total_volume_size_used).to eq(100)
+    }
+    it {
+      expect(subject.total_volumes_used).to eq(2)
     }
 
     it {
@@ -89,6 +95,9 @@ describe OhBoshWillItFit::Limits do
     }
     it {
       expect(subject.volume_size_available).to eq(15000-100)
+    }
+    it {
+      expect(subject.volumes_available).to eq(40-2)
     }
   end
 

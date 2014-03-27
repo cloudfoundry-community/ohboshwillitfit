@@ -23,6 +23,11 @@ module OhBoshWillItFit
       volume_quotas["gigabytes"]
     end
 
+    def max_total_volumes
+      volume_quotas["volumes"]
+    end
+
+
     def total_cores_used
       compute_servers.inject(0) { |total, server| total + flavor_for_server(server).vcpus }
     end
@@ -36,7 +41,11 @@ module OhBoshWillItFit
     end
 
     def total_volume_size_used
-      @total_volume_size_used ||= fog_volumes.volumes.inject(0) {|size, vol| size + vol.size }
+      @total_volume_size_used ||= volumes.inject(0) {|size, vol| size + vol.size }
+    end
+
+    def total_volumes_used
+      @total_volumes_used ||= volumes.size
     end
 
     def volumes_limits_available?
@@ -59,8 +68,16 @@ module OhBoshWillItFit
       max_total_volume_size ? (max_total_volume_size - total_volume_size_used) : nil
     end
 
+    def volumes_available
+      max_total_volumes ? (max_total_volumes - total_volumes_used) : nil
+    end
+
     def compute_servers
       @compute_servers ||= fog_compute.servers
+    end
+
+    def volumes
+      @volumes ||= fog_volumes.volumes
     end
 
     def flavor_for_server(server)

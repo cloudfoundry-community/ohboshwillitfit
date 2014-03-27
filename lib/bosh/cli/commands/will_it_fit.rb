@@ -53,6 +53,7 @@ module Bosh::Cli::Command
         display_resource "ram", resource_totals["ram"], limits.ram_size_available
         display_resource "disk", resource_totals["disk"], limits.volume_size_available
         display_resource "cpus", resource_totals["cpus"], limits.cores_available
+        display_resource "volumes", resource_totals["volumes"], limits.volumes_available
       end
     rescue => e
       err e.message
