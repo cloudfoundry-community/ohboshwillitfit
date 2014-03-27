@@ -6,8 +6,10 @@ module Bosh::Cli::Command
     usage "will it fit"
     desc  "check if this deployment will fit into OpenStack tenancy"
     option "--fog-key default", "Look up credentials in ~/.fog"
+    option "--ignore-invalid-flavors", "Do not fail if invalid flavors being used"
     def will_it_fit
       deployment_required
+      ignore_invalid_flavors = options[:ignore_invalid_flavors]
 
       if fog_key = options[:fog_key]
         credentials = OhBoshWillItFit::FogCredentials.load_from_file(fog_key)
@@ -42,7 +44,9 @@ module Bosh::Cli::Command
         flavors.sort {|f1, f2| f1.ram <=> f2.ram}.each do |flavor|
           say "  #{flavor.name}: ram: #{flavor.ram} disk: #{flavor.disk} cpus: #{flavor.vcpus}"
         end
-      else
+      end
+
+      if !flavor_errors || ignore_invalid_flavors
         say "Resources used:"
         resource_totals = OhBoshWillItFit::Resource.resource_totals(resources)
         display_resource "ram", resource_totals["ram"], limits.ram_size_available
